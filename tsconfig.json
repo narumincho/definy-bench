@@ -7,6 +7,9 @@
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
     "newLine": "lf",
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "outDir": "dist"
+  },
+  "include": ["main.ts", "bridge.ts"]
 }

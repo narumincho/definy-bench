@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+message TypePartIdAndTypePartList {
+  repeated TypePartIdAndData value = 1;
+}
+
+message TypePartIdAndData {
+  bytes type_part_id = 1;
+  TypePart type_part = 2;
+}
+
+message TypePart {
+  string name = 1;
+  string description = 2;
+  bytes project_id = 3;
+  TypeAttribute attribute = 4;
+  repeated TypeParameter type_parameter = 5;
+  TypePartBody body = 6;
+}
+
+enum TypeAttribute {
+  AS_BOOLEAN = 0;
+  AS_UNDEFINED = 1;
+}
+
+message TypeParameter {
+  string name = 1;
+  bytes type_part_id = 2;
+}
+
+message TypePartBody {
+  oneof body {
+    Sum sum = 1;
+    Product product = 2;
+    TypePartBodyKernel kernel = 3;
+  }
+}
+
+message Sum {
+  repeated Pattern pattern = 1;
+}
+
+message Pattern {
+  string name = 1;
+  string description = 2;
+  Type parameter = 3;
+}
+
+message Product {
+  repeated Member member = 1;
+}
+
+message Member {
+  string name = 1;
+  string description = 2;
+  Type type = 3;
+}
+
+enum TypePartBodyKernel {
+  FUNCTION = 0;
+  INT32 = 1;
+  STRING = 2;
+  BINARY = 3;
+  ID = 4;
+  TOKEN = 5;
+  LIST = 6;
+}
+
+message Type {
+  bytes type_part_id = 1;
+  repeated Type parameter = 2; 
+}
