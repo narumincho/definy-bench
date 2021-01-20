@@ -11,17 +11,35 @@ const typePartIdAndData: ReadonlyArray<
   })
 );
 
-export const encodeByDefinyCore = (): void => {
-  d.List.codec(d.IdAndData.codec(d.TypePartId.codec, d.TypePart.codec)).encode(
-    typePartIdAndData
+const encodeByDefinyCore = (): Uint8Array => {
+  return new Uint8Array(
+    d.List.codec(
+      d.IdAndData.codec(d.TypePartId.codec, d.TypePart.codec)
+    ).encode(typePartIdAndData)
   );
 };
 
-export const encodeByJSON = (): void => {
-  JSON.stringify(typePartIdAndData);
+const encodeByJSON = (): string => {
+  return JSON.stringify(typePartIdAndData);
+};
+
+const definyCoreBinary = encodeByDefinyCore();
+const json = encodeByJSON();
+
+const decodeDefinyCode = (): void => {
+  d.List.codec(d.IdAndData.codec(d.TypePartId.codec, d.TypePart.codec)).decode(
+    0,
+    definyCoreBinary
+  );
+};
+
+const decodeByJson = (): void => {
+  JSON.parse(json);
 };
 
 new Benchmark()
   .add("encodeByDefinyCore", encodeByDefinyCore)
   .add("encodeByJSON", encodeByJSON)
+  .add("decodeDefinyCode", decodeDefinyCode)
+  .add("decodeByJson", decodeByJson)
   .run();
