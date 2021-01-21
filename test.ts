@@ -4,12 +4,12 @@ import { promises as fileSystem } from "fs";
 describe("encodeDecodeMatch", () => {
   it("save file", () => {
     fileSystem.writeFile(
-      "file/definyType.json",
+      "file/definyJson.json",
       JSON.stringify(lib.definyCoreSchemaAsDefiny)
     );
 
     fileSystem.writeFile(
-      "file/definyType.bin",
+      "file/definyBinary.bin",
       lib.encodeByDefinyCore(lib.definyCoreSchemaAsDefiny)
     );
 
