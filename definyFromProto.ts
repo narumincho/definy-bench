@@ -7,7 +7,7 @@ export const typePartIdAndTypePartListFromProtoMessage = (
   return idAndDataList.getValueList().map(typePartIdAndDataFromProtoMessage);
 };
 
-export const typePartIdAndDataFromProtoMessage = (
+const typePartIdAndDataFromProtoMessage = (
   idAndData: proto.TypePartIdAndData
 ): d.IdAndData<d.TypePartId, d.TypePart> => {
   const typePart = idAndData.getTypePart();
@@ -20,9 +20,7 @@ export const typePartIdAndDataFromProtoMessage = (
   };
 };
 
-export const typePartFromProtoMessage = (
-  typePart: proto.TypePart
-): d.TypePart => {
+const typePartFromProtoMessage = (typePart: proto.TypePart): d.TypePart => {
   const body = typePart.getBody();
   if (body === null) {
     throw new Error("TypePart require body");

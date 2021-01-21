@@ -11,5 +11,5 @@
     "allowJs": true,
     "outDir": "dist"
   },
-  "exclude": ["generated"]
+  "exclude": ["dist"]
 }

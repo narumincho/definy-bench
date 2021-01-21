@@ -21,7 +21,7 @@ export const typePartIdAndTypePartListToProtoMessage = (
   );
 };
 
-export const typePartIdAndDataToProtoMessage = (
+const typePartIdAndDataToProtoMessage = (
   idAndData: d.IdAndData<d.TypePartId, d.TypePart>
 ): proto.TypePartIdAndData => {
   return new proto.TypePartIdAndData()
@@ -29,9 +29,7 @@ export const typePartIdAndDataToProtoMessage = (
     .setTypePart(typePartToProtoMessage(idAndData.data));
 };
 
-export const typePartToProtoMessage = (
-  typePart: d.TypePart
-): proto.TypePart => {
+const typePartToProtoMessage = (typePart: d.TypePart): proto.TypePart => {
   return new proto.TypePart()
     .setName(typePart.name)
     .setDescription(typePart.description)

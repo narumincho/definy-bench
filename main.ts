@@ -1,45 +1,45 @@
-import * as d from "definy-core/source/data";
-import * as definyCoreSchemaTypePartMap from "definy-core/schema/typePartMap";
+import * as lib from "./lib";
 import Benchmark from "benchmarkjs-pretty";
 
-const typePartIdAndData: ReadonlyArray<
-  d.IdAndData<d.TypePartId, d.TypePart>
-> = [...definyCoreSchemaTypePartMap.typePartMap].map(
-  ([typePartId, typePart]): d.IdAndData<d.TypePartId, d.TypePart> => ({
-    id: typePartId,
-    data: typePart,
-  })
+const encodeByDefinyCore = (): void => {
+  lib.encodeByDefinyCore(lib.definyCoreSchemaAsDefiny);
+};
+
+const encodeByJSON = (): void => {
+  lib.encodeByJSON(lib.definyCoreSchemaAsDefiny);
+};
+
+const encodeProto = (): void => {
+  lib.encodeProto(lib.definyCoreSchemaAsProtoMessage);
+};
+
+const definyCoreSchemaAsDefinyBinary = lib.encodeByDefinyCore(
+  lib.definyCoreSchemaAsDefiny
 );
 
-const encodeByDefinyCore = (): Uint8Array => {
-  return new Uint8Array(
-    d.List.codec(
-      d.IdAndData.codec(d.TypePartId.codec, d.TypePart.codec)
-    ).encode(typePartIdAndData)
-  );
-};
+const definyCoreSchemaAsJson = lib.encodeByJSON(lib.definyCoreSchemaAsDefiny);
 
-const encodeByJSON = (): string => {
-  return JSON.stringify(typePartIdAndData);
-};
-
-const definyCoreBinary = encodeByDefinyCore();
-const json = encodeByJSON();
+const definyCoreSchemaAsProtoBinary = lib.encodeProto(
+  lib.definyCoreSchemaAsProtoMessage
+);
 
 const decodeDefinyCode = (): void => {
-  d.List.codec(d.IdAndData.codec(d.TypePartId.codec, d.TypePart.codec)).decode(
-    0,
-    definyCoreBinary
-  );
+  lib.decodeDefinyCode(definyCoreSchemaAsDefinyBinary);
 };
 
 const decodeByJson = (): void => {
-  JSON.parse(json);
+  lib.decodeByJson(definyCoreSchemaAsJson);
+};
+
+const decodeProto = (): void => {
+  lib.decodeProto(definyCoreSchemaAsProtoBinary);
 };
 
 new Benchmark()
   .add("encodeByDefinyCore", encodeByDefinyCore)
   .add("encodeByJSON", encodeByJSON)
+  .add("encodeProto", encodeProto)
   .add("decodeDefinyCode", decodeDefinyCode)
   .add("decodeByJson", decodeByJson)
+  .add("decodeProto", decodeProto)
   .run();
