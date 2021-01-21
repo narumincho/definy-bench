@@ -11,5 +11,5 @@
     "allowJs": true,
     "outDir": "dist"
   },
-  "include": ["main.ts", "bridge.ts"]
+  "exclude": ["generated"]
 }

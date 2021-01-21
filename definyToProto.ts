@@ -11,10 +11,10 @@ import * as d from "definy-core/source/data";
  */
 
 /**
- * definy core の List (IdAndData TypePartID TypePart) を protoの TypePartIdAndTypeList に 変換する
+ * definy core の List (IdAndData TypePartId TypePart) を protoの TypePartIdAndTypeList に 変換する
  */
-export const typePartIdAndTypePartList = (
-  idAndDataList: ReadonlyArray<d.IdAndData<d.TypePartId, d.TypePart>>
+export const typePartIdAndTypePartListToProtoMessage = (
+  idAndDataList: d.List<d.IdAndData<d.TypePartId, d.TypePart>>
 ): proto.TypePartIdAndTypePartList => {
   return new proto.TypePartIdAndTypePartList().setValueList(
     idAndDataList.map(typePartIdAndDataToProtoMessage)
@@ -32,24 +32,24 @@ export const typePartIdAndDataToProtoMessage = (
 export const typePartToProtoMessage = (
   typePart: d.TypePart
 ): proto.TypePart => {
-  const builder = new proto.TypePart();
-  builder.setName(typePart.name);
-  builder.setDescription(typePart.description);
-  builder.setProjectId(typePart.projectId);
-  if (typePart.attribute._ === "Just") {
-    builder.setAttribute(typeAttributeToProtoMessage(typePart.attribute.value));
-  }
-  builder.setTypeParameterList(
-    typePart.typeParameterList.map(typeParameterToProtoMessage)
-  );
-  builder.setBody(typePartBodyToProtoMessage(typePart.body));
-  return builder;
+  return new proto.TypePart()
+    .setName(typePart.name)
+    .setDescription(typePart.description)
+    .setProjectId(typePart.projectId)
+    .setAttribute(typeAttributeMaybeToProtoMessage(typePart.attribute))
+    .setTypeParameterList(
+      typePart.typeParameterList.map(typeParameterToProtoMessage)
+    )
+    .setBody(typePartBodyToProtoMessage(typePart.body));
 };
 
-const typeAttributeToProtoMessage = (
-  typeAttribute: d.TypeAttribute
+const typeAttributeMaybeToProtoMessage = (
+  typeAttribute: d.Maybe<d.TypeAttribute>
 ): proto.TypeAttribute => {
-  switch (typeAttribute) {
+  if (typeAttribute._ === "Nothing") {
+    return proto.TypeAttribute.NONE;
+  }
+  switch (typeAttribute.value) {
     case "AsBoolean":
       return proto.TypeAttribute.AS_BOOLEAN;
     case "AsUndefined":
@@ -72,13 +72,13 @@ const typePartBodyToProtoMessage = (
     case "Sum":
       return new proto.TypePartBody().setSum(
         new proto.Sum().setPatternList(
-          typePartBody.patternList.map(definyPatternToProtoPattern)
+          typePartBody.patternList.map(patternToProtoMessage)
         )
       );
     case "Product":
       return new proto.TypePartBody().setProduct(
         new proto.Product().setMemberList(
-          typePartBody.memberList.map(definyMemberToProtoMember)
+          typePartBody.memberList.map(memberToProtoMessage)
         )
       );
     case "Kernel":
@@ -88,28 +88,28 @@ const typePartBodyToProtoMessage = (
   }
 };
 
-const definyPatternToProtoPattern = (pattern: d.Pattern): proto.Pattern => {
+const patternToProtoMessage = (pattern: d.Pattern): proto.Pattern => {
   const builder = new proto.Pattern();
 
   builder.setName(pattern.name);
   builder.setDescription(pattern.description);
   if (pattern.parameter._ === "Just") {
-    builder.setParameter(definyTypeToProtoType(pattern.parameter.value));
+    builder.setParameter(typeToProtoMessage(pattern.parameter.value));
   }
   return builder;
 };
 
-const definyMemberToProtoMember = (member: d.Member): proto.Member => {
+const memberToProtoMessage = (member: d.Member): proto.Member => {
   return new proto.Member()
     .setName(member.name)
     .setDescription(member.description)
-    .setType(definyTypeToProtoType(member.type));
+    .setType(typeToProtoMessage(member.type));
 };
 
-const definyTypeToProtoType = (type: d.Type): proto.Type => {
+const typeToProtoMessage = (type: d.Type): proto.Type => {
   return new proto.Type()
     .setTypePartId(type.typePartId)
-    .setParameterList(type.parameter.map(definyTypeToProtoType));
+    .setParameterList(type.parameter.map(typeToProtoMessage));
 };
 
 const typePartBodyKernelToProtoMessage = (

@@ -2378,8 +2378,9 @@ proto.Type.prototype.clearParameterList = function() {
  * @enum {number}
  */
 proto.TypeAttribute = {
-  AS_BOOLEAN: 0,
-  AS_UNDEFINED: 1
+  NONE: 0,
+  AS_BOOLEAN: 1,
+  AS_UNDEFINED: 2
 };
 
 /**

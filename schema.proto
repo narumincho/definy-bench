@@ -19,8 +19,9 @@ message TypePart {
 }
 
 enum TypeAttribute {
-  AS_BOOLEAN = 0;
-  AS_UNDEFINED = 1;
+  NONE = 0;
+  AS_BOOLEAN = 1;
+  AS_UNDEFINED = 2;
 }
 
 message TypeParameter {
